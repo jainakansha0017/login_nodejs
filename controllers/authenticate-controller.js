@@ -1,4 +1,5 @@
 var connection = require('./../config');
+var bcrypt = require('bcrypt');
 module.exports.authenticate=function(req,res){
     var email=req.body.email;
     var password=req.body.password;
@@ -10,7 +11,10 @@ module.exports.authenticate=function(req,res){
             })
       }else{
         if(results.length >0){
-            if(password==results[0].password){
+           bcrypt.compare(password, results[0].password, function(err, ress) {
+            // if(password==results[0].password){
+              if(ress)
+              {
                 res.json({
                     status:true,
                     message:'successfully authenticated'
@@ -21,6 +25,7 @@ module.exports.authenticate=function(req,res){
                   message:"Email and password does not match"
                  });
             }
+          });
          
         }
         else{
